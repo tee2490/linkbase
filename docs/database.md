@@ -116,7 +116,7 @@ Every query against user-owned data includes the signed-in user's id, taken from
 
 import { connectToDatabase } from "@/lib/db/connect";
 import { LinkModel } from "@/lib/db/models/link";
-import { requireUserId } from "@/lib/auth"; // placeholder: returns the session user's id or throws
+import { requireUserId } from "@/lib/auth"; // returns the session user's id or throws (see docs/auth.md)
 
 export async function deleteLink(linkId: string) {
   const userId = await requireUserId();
