@@ -1,26 +1,115 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Design-system tokens. Source of truth: docs/design-system.md */
+@theme {
+  --color-ink: #141414;
+  --color-ink-2: #33332f;
+  --color-ink-3: #676761;
+  --color-ink-4: #9b9b94;
+  --color-paper: #ffffff;
+  --color-mist: #f4f4f1;
+  --color-cloud: #eaeae5;
+  --color-line: #e4e4df;
+  --color-line-strong: #cfcfc9;
+  --color-stage: #ededea;
+  --color-backdrop: #a3a7a2;
+  --color-tangerine: #ff5b2e;
+  --color-tangerine-deep: #d9431a;
+  --color-butter: #ffe27a;
+  --color-sky: #b8dbff;
+  --color-blush: #ffc8d5;
+  --color-teal: #0f4c45;
+  --color-teal-bright: #17a37d;
+  --color-plum: #3a1a45;
+  --color-cobalt: #1f3fbf;
+  --color-success: #17a37d;
+  --color-danger: #d92d20;
+  --color-warning: #e8a400;
+
+  --color-surface-page: var(--color-paper);
+  --color-surface-card: var(--color-paper);
+  --color-surface-chip: var(--color-mist);
+  --color-surface-chip-hover: var(--color-cloud);
+  --color-surface-profile: var(--color-stage);
+  --color-surface-backdrop: var(--color-backdrop);
+  --color-surface-inverse: var(--color-ink);
+  --color-fg: var(--color-ink);
+  --color-fg-secondary: var(--color-ink-2);
+  --color-fg-muted: var(--color-ink-3);
+  --color-fg-faint: var(--color-ink-4);
+  --color-fg-inverse: #ffffff;
+  --color-border-subtle: var(--color-line);
+  --color-border-strong: var(--color-line-strong);
+  --color-action: var(--color-ink);
+  --color-action-hover: var(--color-ink-2);
+  --color-action-fg: #ffffff;
+  --color-accent: var(--color-tangerine);
+  --color-accent-hover: var(--color-tangerine-deep);
+  --color-accent-fg: var(--color-ink);
+  --color-state-on: var(--color-teal-bright);
+
+  --text-11: 11px;
+  --text-12: 12px;
+  --text-13: 13px;
+  --text-14: 14px;
+  --text-15: 15px;
+  --text-16: 16px;
+  --text-18: 18px;
+  --text-20: 20px;
+  --text-24: 24px;
+  --text-28: 28px;
+  --text-36: 36px;
+  --text-48: 48px;
+  --text-64: 64px;
+  --text-88: 88px;
+  --leading-tight: 1.02;
+  --leading-snug: 1.15;
+  --leading-normal: 1.4;
+  --leading-relaxed: 1.55;
+  --tracking-display: -0.035em;
+  --tracking-heading: -0.02em;
+  --tracking-body: -0.005em;
+
+  --container-profile: 580px;
+  --container-editor: 640px;
+  --container-content: 1200px;
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+
+  --shadow-hairline: 0 0 0 1px #e4e4df;
+  --shadow-card: 0 1px 2px rgba(20, 20, 20, 0.04), 0 0 0 1px rgba(20, 20, 20, 0.03);
+  --shadow-float: 0 2px 8px rgba(20, 20, 20, 0.08), 0 0 0 1px rgba(20, 20, 20, 0.04);
+  --shadow-panel: 0 0 0 1px #e4e4df, 0 12px 32px -12px rgba(20, 20, 20, 0.1);
+  --shadow-pop: 0 12px 40px -8px rgba(20, 20, 20, 0.22);
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* Font families come from next/font variables set in layout.tsx. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-surface-page);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-body);
+}
+
+/* Hover/press transforms use motion-safe: variants; this drops the remaining transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+  }
 }
