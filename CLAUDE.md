@@ -22,6 +22,13 @@ Freshly bootstrapped with `create-next-app`, so it has no app-specific code yet.
 - **`partialPrefetching: true`** means `<Link>` prefetches one shared App Shell per route. Use `<Link prefetch={true}>` only when a link needs its params/searchParams data prefetched.
 - **Tailwind v4 is CSS-first.** There is no `tailwind.config` file. `globals.css` does `@import "tailwindcss"` and defines theme tokens in `@theme inline`, with light/dark values set as CSS variables on `:root`. CSS goes through the `@tailwindcss/turbopack` loader configured under `turbopack.rules` in `next.config.ts`, not PostCSS.
 
+## Live Docs (Context7)
+
+Before writing code that uses Next.js, React, Mongoose, NextAuth (Auth.js), Zod, Tailwind CSS or any other library, pull current docs through the Context7 MCP server first. Resolve the library with `resolve-library-id`, then query with `query-docs`. Don't rely on training data for API signatures, config options or version-specific behavior. These libraries change often, and several here are newer than most training data.
+
+- Match the docs to the version in `package.json`. For Next.js, the docs bundled in `node_modules/next/dist/docs/` match the installed version exactly (see `AGENTS.md`). If they disagree with Context7, the bundled docs win.
+- If Context7 has no entry for a library, say so before proceeding, and name the source used instead (bundled docs in `node_modules`, the package's own types, or its official site).
+
 ## Doc Convention
 
 Project reference docs live in `docs/`. Whenever a new file is created in `docs/`, add it to the Project Docs list below with one line on what it covers and when to read it.
