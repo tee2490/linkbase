@@ -1,5 +1,7 @@
 import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
 
+import { HANDLE_MAX_LENGTH, HANDLE_MIN_LENGTH, HANDLE_PATTERN } from "@/lib/validation/handle";
+
 const userSchema = new Schema(
   {
     email: {
@@ -14,12 +16,20 @@ const userSchema = new Schema(
     passwordHash: { type: String, required: true, select: false },
     displayName: { type: String, required: true, trim: true, maxlength: 50 },
     // Claimed during onboarding, so new users don't have one yet.
-    handle: { type: String, lowercase: true, trim: true, maxlength: 30 },
+    handle: {
+      type: String,
+      lowercase: true,
+      trim: true,
+      minlength: HANDLE_MIN_LENGTH,
+      maxlength: HANDLE_MAX_LENGTH,
+      match: HANDLE_PATTERN,
+    },
   },
   { strict: true, timestamps: true },
 );
 
-// Unique only among users that have a handle; users without one don't collide.
+// Serves /user/[handle] lookups. Unique only among users that have a handle, so
+// users who haven't finished onboarding don't collide.
 userSchema.index(
   { handle: 1 },
   { unique: true, partialFilterExpression: { handle: { $type: "string" } } },

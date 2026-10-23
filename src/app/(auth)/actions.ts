@@ -10,7 +10,6 @@ import { UserModel } from "@/lib/db/models/user";
 import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 import type { ActionResult } from "@/lib/types/action-result";
 import {
-  DEFAULT_REDIRECT,
   safeCallbackUrl,
   signInSchema,
   signUpSchema,
@@ -23,6 +22,8 @@ const SIGN_UP_LIMIT = 5;
 const SIGN_UP_WINDOW_SECONDS = 60 * 60;
 const DUPLICATE_KEY = 11000;
 const MAX_DISPLAY_NAME_LENGTH = 50;
+
+const ONBOARDING_REDIRECT = "/onboarding";
 
 const RATE_LIMITED_MESSAGE = "Too many attempts. Try again later.";
 const INVALID_CREDENTIALS_MESSAGE = "Email or password is incorrect";
@@ -77,7 +78,8 @@ export async function signUp(_prev: SignUpResult, formData: FormData): Promise<S
     throw new Error("Failed to create account", { cause: error });
   }
 
-  return startCredentialsSignIn({ email, password }, DEFAULT_REDIRECT);
+  // A new account has no handle yet, so go straight to onboarding.
+  return startCredentialsSignIn({ email, password }, ONBOARDING_REDIRECT);
 }
 
 export async function signOutUser() {

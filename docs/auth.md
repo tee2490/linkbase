@@ -42,11 +42,11 @@ Security practices to follow:
 - **Secret:** set `AUTH_SECRET` (generate with `npx auth secret`) and never commit it. Provider credentials also live in environment variables.
 - **Cookies:** keep NextAuth's defaults. Session cookies are `httpOnly`, `SameSite=Lax`, and `Secure` with the `__Secure-` prefix over HTTPS.
 - **CSRF:** NextAuth protects its own sign-in and sign-out endpoints. Server Actions are POST-only and Next.js checks their `Origin` header, so don't add extra GET endpoints that change data.
-- **Session contents:** put only the user id in the session, never secrets, tokens or the full user document. Add it in the `session` callback (`session.user.id = token.sub`).
+- **Session contents:** put only the user id and the `onboarded` flag in the session, never secrets, tokens or the full user document. Add them in the `session` callback (`session.user.id = token.sub`).
 - **Expiry:** keep a bounded session lifetime (`session.maxAge`) and let NextAuth rotate it on activity.
 - **Redirects:** only redirect to relative, same-site callback URLs after sign-in.
 - **Providers:** **Credentials** (email + password). Passwords are hashed with bcrypt (`bcryptjs`, cost 12) and limited to 72 bytes, bcrypt's maximum. `authorize` in `lib/auth/config.ts` rate-limits by IP + email before checking the password, so direct POSTs to `/api/auth/callback/credentials` are limited too. When no user matches, it still compares against a dummy hash, so timing doesn't reveal which emails exist. OAuth providers may be added later.
-- **Sessions:** Credentials requires the `jwt` strategy. The `jwt` callback keeps only `sub`, and the `session` callback returns only `user.id`. Name and email are read from the database by id (`getUserSummary` in `lib/db/queries/users.ts`).
+- **Sessions:** Credentials requires the `jwt` strategy. The `jwt` callback keeps only `sub` and `onboarded`, and the `session` callback returns only `user.id` and `user.onboarded`. Name and email are read from the database by id (`getUserSummary` in `lib/db/queries/users.ts`).
 - **Sign-up and sign-in actions** (`app/(auth)/actions.ts`) are the only Server Actions that skip `requireUserId()`, since the user has no session yet. They're rate-limited instead (see `docs/security.md`). Sign-in errors are the same whether or not the account exists.
 - **Adapter:** none. Users live in the Mongoose `User` model. If an OAuth provider ever needs an adapter, `@auth/mongodb-adapter` uses its own `MongoClient`, separate from the Mongoose connection. Both should point at the same `MONGODB_URI`.
 
@@ -86,6 +86,15 @@ export const config = {
 ```
 
 The proxy is a first gate for pages, not the security boundary. Server Actions are POST requests to whatever page uses them, so a matcher change or a moved action can silently skip the proxy. That's why every Server Action checks the session again.
+
+## Onboarding gate
+
+New users claim a handle at `/onboarding` before anything else. The JWT carries a boolean `onboarded` claim:
+
+- While it's falsy, the `jwt` callback re-reads the user's `handle` from the database (`userHasHandle` in `lib/db/queries/users.ts`) on every session read. A stale cookie therefore can't trap a finished user on `/onboarding`.
+- `claimHandle` (`app/onboarding/actions.ts`) calls `unstable_update({})` after saving, which re-runs the `jwt` callback with `trigger: "update"`. The callback ignores the update payload and re-reads the database.
+- `proxy.ts` redirects signed-in users without the flag from every non-public path to `/onboarding`, and onboarded users away from `/onboarding` to `/dashboard`. Guest-only pages send signed-in users to whichever of the two applies.
+- The page and the action check the database again, so the flag is a routing hint, not a security boundary.
 
 ## Server-side identity
 
