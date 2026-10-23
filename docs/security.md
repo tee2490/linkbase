@@ -102,7 +102,7 @@ Rate-limit the actions an attacker would repeat:
 | Link creation (`addLink`) | User id | 30 per hour | Return `formError: "You're adding links too fast. Try again later."` |
 
 - **Check the limit before doing the work**: in a Server Action, right after `requireUserId()` and before validation and the write (see `docs/data-mutations.md`). A limited request returns an `ActionResult` error; it doesn't throw.
-- **Use a shared store, not memory.** An in-memory counter resets on every deploy and isn't shared between server instances. Use MongoDB (a counter collection with a TTL index) or Redis. Choice: **TBD**.
+- **Use a shared store, not memory.** An in-memory counter resets on every deploy and isn't shared between server instances. The store is **MongoDB**: the `RateLimit` model (`lib/db/models/rate-limit.ts`) holds one fixed-window counter per key, updated atomically with a pipeline `findOneAndUpdate`, and a TTL index on `expiresAt` deletes expired windows. Sign-up is limited to 5 per hour per IP.
 - Put the helper in `lib/rate-limit/` with one function, for example `checkRateLimit(key, limit, windowSeconds)`.
 - **Get the client IP from the platform.** Read `x-forwarded-for` (or the platform's own header) via `headers()`, and trust it only when the app runs behind a proxy that sets it.
 - Don't reveal whether an email exists. Sign-in errors and rate-limit messages are the same whether or not the account exists.

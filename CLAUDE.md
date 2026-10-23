@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run start` — serve the production build
 - `npm run lint` — ESLint (flat config in `eslint.config.mjs`, using `eslint-config-next` core-web-vitals + typescript)
 
-No test framework is set up yet.
+- `npm test` — Vitest unit tests (watch mode; `npm test -- --run` for a single run). End-to-end QA runs through the `run-qa-suite` skill. See `docs/testing.md`.
 
 ## Stack and architecture
 
@@ -28,6 +28,21 @@ Before writing code that uses Next.js, React, Mongoose, NextAuth (Auth.js), Zod,
 
 - Match the docs to the version in `package.json`. For Next.js, the docs bundled in `node_modules/next/dist/docs/` match the installed version exactly (see `AGENTS.md`). If they disagree with Context7, the bundled docs win.
 - If Context7 has no entry for a library, say so before proceeding, and name the source used instead (bundled docs in `node_modules`, the package's own types, or its official site).
+
+## React Performance (vercel-react-best-practices)
+
+Load the `vercel-react-best-practices` skill (installed in `.agents/skills/`, linked into `.claude/skills/`) when you:
+
+- Write or change a component, page, layout or `loading.tsx`.
+- Write a Server Component or query that loads data. Check the `async-` and `server-` rules for waterfalls, `Promise.all` and serialization to Client Components.
+- Add a `"use client"` boundary, an import of a heavy library, or a third-party script. Check the `bundle-` rules.
+- Review, refactor or debug slow React/Next.js code, including in `plan-feature`, `create-feature` and `code-review`.
+
+Read only the rule files in its `rules/` folder that match the task, not the whole set. The skill is general guidance, so where it conflicts with this project, the project wins:
+
+- Project docs in `docs/` and the bundled Next.js docs override it. For example, cross-request caching uses `'use cache'` + `cacheTag` (see `docs/data-fetching.md`), not an LRU cache, and pages read data in Server Components, not with SWR.
+- Don't add the packages its rules suggest (`swr`, `better-all`, `lru-cache` and so on) without asking first.
+- The React Compiler is off here (no `reactCompiler` in `next.config.ts`), so the `rerender-` memoization rules apply. Use them only where a re-render problem is real, not by default.
 
 ## Doc Convention
 
@@ -46,4 +61,5 @@ Project reference docs live in `docs/`. Whenever a new file is created in `docs/
 - `docs/git-conventions.md` — Conventional Commits types and subject rules, `<type>/<feature>` branch names, one branch and PR per feature, no direct commits to `main`, squash merges, and required human review before merge. Read before creating a branch, writing a commit message, or opening a PR.
 - `docs/routing.md` — Route map, the `(auth)` and `(dashboard)` route groups, public vs. protected routes, when to add `layout.tsx`/`loading.tsx`/`error.tsx`, and the rule that Route Handlers are only for webhooks and third-party callbacks. Read before adding a route, a route file, or a Route Handler.
 - `docs/security.md` — Secrets in env vars (`.env.local` ignored, `.env.example` committed), security headers and CSP in `next.config.ts`, rate limits on sign-in and link creation, and safe rendering of user content and outbound links. Read before adding an env var, a header, a third-party resource, a repeatable action, or UI that shows user content.
+- `docs/testing.md` — Vitest unit tests for pure functions and Zod schemas (`*.test.ts` next to the file), end-to-end QA through Playwright MCP and the `run-qa-suite` skill (no committed browser tests), the separate test database (`MONGODB_URI_TEST` in `.env.test`), no mocked Server Actions, and independent tests. Read before writing a test or running QA.
 - `docs/ui.md` — Component specs (Button, IconButton, Input, LinkCard, Tabs, etc.), layout patterns for the dashboard, public profile, onboarding and marketing pages, plus accessibility notes. Read before building or changing any UI component or page layout.

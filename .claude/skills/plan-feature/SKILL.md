@@ -33,7 +33,7 @@ Then read the docs for the feature's area:
 | Adds env vars, third-party resources, repeatable actions, or shows user content | `docs/security.md` |
 | Builds UI | `docs/ui.md`, `docs/design-system.md` |
 
-Also look at the existing code the feature will touch. Follow the "Live Docs (Context7)" rule in `CLAUDE.md` for any library API the plan depends on.
+Also look at the existing code the feature will touch. Follow the "Live Docs (Context7)" rule in `CLAUDE.md` for any library API the plan depends on. If the feature builds UI or loads data, follow the "React Performance" rule in `CLAUDE.md`. Plan Client Component boundaries, parallel fetches and Suspense placement with it.
 
 ## 3. Write the plan
 

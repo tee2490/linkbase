@@ -1,0 +1,29 @@
+import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
+
+const userSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      maxlength: 254,
+    },
+    // Never returned unless a query asks for it with .select("+passwordHash").
+    passwordHash: { type: String, required: true, select: false },
+    displayName: { type: String, required: true, trim: true, maxlength: 50 },
+    // Claimed during onboarding, so new users don't have one yet.
+    handle: { type: String, lowercase: true, trim: true, maxlength: 30 },
+  },
+  { strict: true, timestamps: true },
+);
+
+// Unique only among users that have a handle; users without one don't collide.
+userSchema.index(
+  { handle: 1 },
+  { unique: true, partialFilterExpression: { handle: { $type: "string" } } },
+);
+
+export type User = InferSchemaType<typeof userSchema>;
+export const UserModel: Model<User> = models.User ?? model("User", userSchema);
