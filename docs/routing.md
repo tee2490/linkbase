@@ -11,6 +11,9 @@ src/app/
 ├── layout.tsx                    # Root layout (html, body, fonts)
 ├── page.tsx                      # /                  Landing page        public
 ├── user/[handle]/page.tsx        # /user/[handle]     Public profile      public
+├── onboarding/
+│   ├── page.tsx                  # /onboarding        Claim a username    signed in, no handle yet
+│   └── actions.ts                # checkHandleAvailability, claimHandle
 ├── (auth)/
 │   ├── layout.tsx                # Shared auth layout
 │   ├── actions.ts                # signInWithCredentials, signUp, signOutUser
@@ -29,8 +32,9 @@ src/app/
 |---|---|---|
 | `/` | — | Public |
 | `/user/[handle]` | — | Public |
-| `/sign-in` | `(auth)` | Public (signed-in users go to `/dashboard`) |
-| `/sign-up` | `(auth)` | Public (signed-in users go to `/dashboard`) |
+| `/sign-in` | `(auth)` | Public (signed-in users go to `/dashboard`, or `/onboarding` without a handle) |
+| `/sign-up` | `(auth)` | Public (signed-in users go to `/dashboard`, or `/onboarding` without a handle) |
+| `/onboarding` | — | Signed in without a handle (onboarded users go to `/dashboard`) |
 | `/dashboard` | `(dashboard)` | Signed in |
 | `/add-links` | `(dashboard)` | Signed in |
 | `/api/auth/*` | — | Public (NextAuth) |

@@ -4,6 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 
 import { connectToDatabase } from "@/lib/db/connect";
 import { UserModel } from "@/lib/db/models/user";
+import { userHasHandle } from "@/lib/db/queries/users";
 import { env } from "@/lib/env";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { signInSchema } from "@/lib/validation/auth";
@@ -20,7 +21,7 @@ export class RateLimitedError extends CredentialsSignin {
   code = "rate_limited";
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
   secret: env.AUTH_SECRET,
   session: { strategy: "jwt", maxAge: SESSION_MAX_AGE_SECONDS },
   pages: { signIn: "/sign-in" },
@@ -55,12 +56,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    // Keep only the user id in the token; name and email are read from the database.
-    jwt({ token }) {
-      return { sub: token.sub };
+    // Keep only the user id and the onboarding flag in the token; name and email are
+    // read from the database. Until a handle is claimed, every session read re-checks
+    // the database, so a stale cookie can't keep a finished user on /onboarding.
+    // An "update" (unstable_update after claiming) re-checks too; its payload is ignored.
+    async jwt({ token, trigger }) {
+      const onboarded =
+        token.onboarded === true && trigger !== "update"
+          ? true
+          : token.sub
+            ? await userHasHandle(token.sub)
+            : false;
+      return { sub: token.sub, onboarded };
     },
     session({ session, token }) {
-      return { expires: session.expires, user: { id: token.sub ?? "" } };
+      return {
+        expires: session.expires,
+        user: { id: token.sub ?? "", onboarded: token.onboarded === true },
+      };
     },
   },
 });
