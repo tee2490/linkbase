@@ -45,8 +45,10 @@ Security practices to follow:
 - **Session contents:** put only the user id in the session, never secrets, tokens or the full user document. Add it in the `session` callback (`session.user.id = token.sub`).
 - **Expiry:** keep a bounded session lifetime (`session.maxAge`) and let NextAuth rotate it on activity.
 - **Redirects:** only redirect to relative, same-site callback URLs after sign-in.
-- **Providers:** **TBD**. Prefer OAuth or email magic links over storing passwords. If credentials are ever added, hash with a slow algorithm (argon2 or bcrypt) and rate-limit sign-in.
-- **Adapter:** if NextAuth stores users in MongoDB, `@auth/mongodb-adapter` uses its own `MongoClient`, separate from the Mongoose connection. Both should point at the same `MONGODB_URI`.
+- **Providers:** **Credentials** (email + password). Passwords are hashed with bcrypt (`bcryptjs`, cost 12) and limited to 72 bytes, bcrypt's maximum. `authorize` in `lib/auth/config.ts` rate-limits by IP + email before checking the password, so direct POSTs to `/api/auth/callback/credentials` are limited too. When no user matches, it still compares against a dummy hash, so timing doesn't reveal which emails exist. OAuth providers may be added later.
+- **Sessions:** Credentials requires the `jwt` strategy. The `jwt` callback keeps only `sub`, and the `session` callback returns only `user.id`. Name and email are read from the database by id (`getUserSummary` in `lib/db/queries/users.ts`).
+- **Sign-up and sign-in actions** (`app/(auth)/actions.ts`) are the only Server Actions that skip `requireUserId()`, since the user has no session yet. They're rate-limited instead (see `docs/security.md`). Sign-in errors are the same whether or not the account exists.
+- **Adapter:** none. Users live in the Mongoose `User` model. If an OAuth provider ever needs an adapter, `@auth/mongodb-adapter` uses its own `MongoClient`, separate from the Mongoose connection. Both should point at the same `MONGODB_URI`.
 
 ## Route protection (proxy)
 
@@ -62,6 +64,7 @@ const PUBLIC_PATHS = [
   /^\/$/,
   /^\/user\/[^/]+$/,
   /^\/sign-in$/,
+  /^\/sign-up$/,
   /^\/api\/auth\//,
   /^\/api\/webhooks\//, // no session; handlers verify signatures
 ];

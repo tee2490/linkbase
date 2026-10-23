@@ -25,7 +25,7 @@ export function ClaimForm({ variant = "primary" }: ClaimFormProps) {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    router.push(handle ? `/sign-in?handle=${encodeURIComponent(handle)}` : "/sign-in");
+    router.push(handle ? `/sign-up?handle=${encodeURIComponent(handle)}` : "/sign-up");
   }
 
   return (

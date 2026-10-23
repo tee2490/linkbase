@@ -34,6 +34,8 @@ Follow the "Live Docs (Context7)" rule in `CLAUDE.md`. Before writing code that 
 
 Don't write library calls from memory.
 
+When writing components, pages or data loading, also follow the "React Performance" rule in `CLAUDE.md`. Load `vercel-react-best-practices` and read the rule files that match the code. Project docs win where they conflict.
+
 ## 4. Build
 
 - **Follow the plan's file list.** Create and change only the files it names, in a sensible order: types and validation schemas, models, query functions, Server Actions, then pages and components.

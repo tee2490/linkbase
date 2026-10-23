@@ -8,6 +8,7 @@ const envSchema = z.object({
   MONGODB_URI: z
     .string()
     .regex(/^mongodb(\+srv)?:\/\//, "must start with mongodb:// or mongodb+srv://"),
+  AUTH_SECRET: z.string().min(32, "must be at least 32 characters (generate with: npx auth secret)"),
 });
 
 const parsed = envSchema.safeParse(process.env);

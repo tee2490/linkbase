@@ -65,7 +65,7 @@ Every schema uses:
 
 - **Strict mode** (`strict: true`, also Mongoose's default). Fields that aren't in the schema are dropped and never saved.
 - **Timestamps** (`timestamps: true`). Mongoose sets `createdAt` and `updatedAt` automatically.
-- **Indexes on `userId` and `handle`.** `userId` is indexed on every user-owned collection so scoped queries stay fast. `handle` is indexed for public profile lookups and is unique, since it identifies a profile URL.
+- **Indexes on `userId` and `handle`.** `userId` is indexed on every user-owned collection so scoped queries stay fast. `handle` is indexed for public profile lookups and is unique, since it identifies a profile URL. Users pick a handle during onboarding, after sign-up, so it's optional on the schema and its unique index is partial (`partialFilterExpression: { handle: { $type: "string" } }`), which lets many users have no handle yet.
 
 Register models with `models.X ?? model(...)`. This reuses an already compiled model after a hot reload instead of throwing `OverwriteModelError`.
 
@@ -91,10 +91,16 @@ export const LinkModel = models.Link ?? model("Link", linkSchema);
 // src/lib/db/models/user.ts (excerpt)
 const userSchema = new Schema(
   {
-    handle: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    passwordHash: { type: String, required: true, select: false },
+    handle: { type: String, lowercase: true, trim: true }, // set during onboarding
     // ...
   },
   { strict: true, timestamps: true },
+);
+userSchema.index(
+  { handle: 1 },
+  { unique: true, partialFilterExpression: { handle: { $type: "string" } } },
 );
 ```
 

@@ -13,7 +13,9 @@ src/app/
 ├── user/[handle]/page.tsx        # /user/[handle]     Public profile      public
 ├── (auth)/
 │   ├── layout.tsx                # Shared auth layout
-│   └── sign-in/page.tsx          # /sign-in           Sign-in             public
+│   ├── actions.ts                # signInWithCredentials, signUp, signOutUser
+│   ├── sign-in/page.tsx          # /sign-in           Sign-in             public
+│   └── sign-up/page.tsx          # /sign-up           Sign-up             public
 ├── (dashboard)/
 │   ├── layout.tsx                # Shared dashboard shell
 │   ├── dashboard/page.tsx        # /dashboard         Dashboard           protected
@@ -27,7 +29,8 @@ src/app/
 |---|---|---|
 | `/` | — | Public |
 | `/user/[handle]` | — | Public |
-| `/sign-in` | `(auth)` | Public |
+| `/sign-in` | `(auth)` | Public (signed-in users go to `/dashboard`) |
+| `/sign-up` | `(auth)` | Public (signed-in users go to `/dashboard`) |
 | `/dashboard` | `(dashboard)` | Signed in |
 | `/add-links` | `(dashboard)` | Signed in |
 | `/api/auth/*` | — | Public (NextAuth) |
@@ -38,7 +41,7 @@ src/app/
 Folders in parentheses organize routes and share a layout **without adding a URL segment**. `(dashboard)/add-links/page.tsx` is served at `/add-links`.
 
 - **`(dashboard)`** holds every authenticated page and the dashboard shell layout. New signed-in pages go here.
-- **`(auth)`** holds sign-in and any future auth pages (sign-up, verify email), sharing a minimal layout without the dashboard chrome.
+- **`(auth)`** holds sign-in, sign-up and any future auth pages (verify email), sharing a minimal layout without the dashboard chrome. Signed-in users who open `/sign-in` or `/sign-up` are redirected to `/dashboard` by the proxy.
 - Public pages (`/`, `/user/[handle]`) sit outside both groups.
 
 ## Protection
