@@ -75,17 +75,23 @@ import { Schema, model, models, type InferSchemaType } from "mongoose";
 
 const linkSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     title: { type: String, required: true, trim: true, maxlength: 100 },
-    url: { type: String, required: true, trim: true },
+    url: { type: String, required: true, trim: true, maxlength: 2048, match: /^https?:\/\//i },
     position: { type: Number, required: true, min: 0 },
+    visible: { type: Boolean, required: true, default: true },
   },
   { strict: true, timestamps: true },
 );
 
+// Serves every scoped read, which filters on userId and sorts by position.
+linkSchema.index({ userId: 1, position: 1 });
+
 export type Link = InferSchemaType<typeof linkSchema>;
 export const LinkModel = models.Link ?? model("Link", linkSchema);
 ```
+
+Links are ordered by `position`, lowest first. `addLink` puts a new link at the top: it increments the user's other links by one and creates the new one at `0`. The compound `{ userId, position }` index covers the `userId` index requirement.
 
 ```ts
 // src/lib/db/models/user.ts (excerpt)
