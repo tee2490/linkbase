@@ -21,7 +21,10 @@ src/app/
 │   └── sign-up/page.tsx          # /sign-up           Sign-up             public
 ├── (dashboard)/
 │   ├── layout.tsx                # Shared dashboard shell
-│   ├── dashboard/page.tsx        # /dashboard         Dashboard           protected
+│   ├── error.tsx                 # Error boundary for every dashboard page
+│   ├── dashboard/
+│   │   ├── page.tsx              # /dashboard         Dashboard (links)   protected
+│   │   └── actions.ts            # addLink, updateLink, deleteLink
 │   └── add-links/page.tsx        # /add-links         Add links           protected
 └── api/
     ├── auth/[...nextauth]/route.ts   # NextAuth handlers and OAuth callbacks
