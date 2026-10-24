@@ -16,7 +16,7 @@ export function LinkButton({ title, href }: LinkButtonProps) {
     <a
       href={href}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer nofollow ugc"
       className={`${BASE_CLASSES} transition duration-120 ease-out hover:shadow-float motion-safe:hover:-translate-y-px motion-safe:active:scale-[.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2`}
     >
       {title}

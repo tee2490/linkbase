@@ -10,7 +10,9 @@ How routes are organized under `src/app/`, which are public, and where mutations
 src/app/
 ├── layout.tsx                    # Root layout (html, body, fonts)
 ├── page.tsx                      # /                  Landing page        public
-├── user/[handle]/page.tsx        # /user/[handle]     Public profile      public
+├── user/[handle]/
+│   ├── page.tsx                  # /user/[handle]     Public profile      public
+│   └── not-found.tsx             # Unknown or invalid handle (404)
 ├── onboarding/
 │   ├── page.tsx                  # /onboarding        Claim a username    signed in, no handle yet
 │   └── actions.ts                # checkHandleAvailability, claimHandle
@@ -50,6 +52,10 @@ Folders in parentheses organize routes and share a layout **without adding a URL
 - **`(dashboard)`** holds every authenticated page and the dashboard shell layout. New signed-in pages go here.
 - **`(auth)`** holds sign-in, sign-up and any future auth pages (verify email), sharing a minimal layout without the dashboard chrome. Signed-in users who open `/sign-in` or `/sign-up` are redirected to `/dashboard` by the proxy.
 - Public pages (`/`, `/user/[handle]`) sit outside both groups.
+
+### Public profile
+
+`/user/[handle]` must answer an unknown handle with a real `404`. A `notFound()` inside `<Suspense>` runs after streaming has started, so the status would stay `200`. The page therefore awaits `params` and the cached `getPublicProfile` outside any Suspense boundary (and has no `loading.tsx`), and sets `export const instant = false` to opt this one route out of static-shell validation. The profile data itself is cached with `'use cache'`, so only the first visit after a change waits on the database.
 
 ## Protection
 
