@@ -1,26 +1,164 @@
 @import "tailwindcss";
 
+/* Dark grounds (cobalt, maroon, grape…) switch focus rings to focus-inverse. See docs/ui.md. */
+@custom-variant on-dark (&:where(.on-dark, .on-dark *));
+
+/* Linkbase tokens. Values from docs/design-system.md. One theme: Light. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --surface: #ffffff;
+  --canvas: #f3f3f1;
+  --surface-soft: #eff0ed;
+  --surface-muted: #f2f2f2;
+  --field: #f6f7f5;
+  --profile-canvas: #edeef1;
+  --backdrop: #a5a8aa;
+  --border: #ebebeb;
+  --border-strong: #e1e2d9;
+  --ink: #1e2330;
+  --ink-app: #141414;
+  --ink-inverse: #ffffff;
+  --muted: #676b5f;
+  --muted-app: #595959;
+  --lime: #d1e822;
+  --lime-soft: #ebffc5;
+  --forest: #254f1a;
+  --cobalt: #2665d6;
+  --navy: #061491;
+  --maroon: #780016;
+  --maroon-deep: #540410;
+  --orchid: #e9c0e9;
+  --magenta: #d716e6;
+  --grape: #502274;
+  --sage: #e7efd5;
+  --olive: #71774e;
+  --teal: #00acc4;
+  --orange: #ff6c05;
+  --mustard: #d6a336;
+  --success: #036e1b;
+  --success-bright: #43e660;
+  --danger: #b3261e;
+  --focus: var(--cobalt);
+  --focus-inverse: var(--ink-inverse);
+
+  --size-control-xl: 64px;
+  --size-control-lg: 60px;
+  --size-control-md: 48px;
+  --size-control-sm: 44px;
+  --size-control-xs: 36px;
+  --size-icon-btn: 40px;
+  --size-icon-btn-sm: 32px;
+  --size-container: 1296px;
+  --size-panel: 624px;
+  --size-profile: 580px;
 }
 
+/* Radius, shadow and font tokens share Tailwind's namespaces, so they're defined here directly. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-surface: var(--surface);
+  --color-canvas: var(--canvas);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-muted: var(--surface-muted);
+  --color-field: var(--field);
+  --color-profile-canvas: var(--profile-canvas);
+  --color-backdrop: var(--backdrop);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ink: var(--ink);
+  --color-ink-app: var(--ink-app);
+  --color-ink-inverse: var(--ink-inverse);
+  --color-muted: var(--muted);
+  --color-muted-app: var(--muted-app);
+  --color-lime: var(--lime);
+  --color-lime-soft: var(--lime-soft);
+  --color-forest: var(--forest);
+  --color-cobalt: var(--cobalt);
+  --color-navy: var(--navy);
+  --color-maroon: var(--maroon);
+  --color-maroon-deep: var(--maroon-deep);
+  --color-orchid: var(--orchid);
+  --color-magenta: var(--magenta);
+  --color-grape: var(--grape);
+  --color-sage: var(--sage);
+  --color-olive: var(--olive);
+  --color-teal: var(--teal);
+  --color-orange: var(--orange);
+  --color-mustard: var(--mustard);
+  --color-success: var(--success);
+  --color-success-bright: var(--success-bright);
+  --color-danger: var(--danger);
+  --color-focus: var(--focus);
+  --color-focus-inverse: var(--focus-inverse);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-archivo), "Arial Black", system-ui, sans-serif;
+  --font-sans: var(--font-figtree), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, Menlo, monospace;
+
+  --text-display-xl: 88px;
+  --text-display-xl--line-height: 86px;
+  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-xl--font-weight: 800;
+  --text-display-lg: 64px;
+  --text-display-lg--line-height: 60px;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 800;
+  --text-display-md: 36px;
+  --text-display-md--line-height: 40px;
+  --text-display-md--letter-spacing: -0.01em;
+  --text-display-md--font-weight: 800;
+  --text-title-lg: 32px;
+  --text-title-lg--line-height: 36px;
+  --text-title-lg--font-weight: 600;
+  --text-title-md: 26px;
+  --text-title-md--line-height: 32px;
+  --text-title-md--font-weight: 600;
+  --text-title-sm: 24px;
+  --text-title-sm--line-height: 30px;
+  --text-title-sm--font-weight: 700;
+  --text-body-lg: 20px;
+  --text-body-lg--line-height: 27px;
+  --text-body: 18px;
+  --text-body--line-height: 26px;
+  --text-body-md: 16px;
+  --text-body-md--line-height: 24px;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-label-lg: 18px;
+  --text-label-lg--line-height: 24px;
+  --text-label-lg--font-weight: 600;
+  --text-label: 16px;
+  --text-label--line-height: 20px;
+  --text-label--font-weight: 500;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--font-weight: 500;
+  --text-caption-mono: 14px;
+  --text-caption-mono--line-height: 20px;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-2xl: 40px;
+
+  --shadow-card: 0 1px 2px rgba(20, 20, 20, 0.04), 0 6px 24px rgba(20, 20, 20, 0.06);
+  --shadow-float: 0 2px 12px rgba(20, 20, 20, 0.1);
+  --shadow-phone: 0 24px 64px rgba(20, 20, 20, 0.18);
+
+  --spacing-control-xl: var(--size-control-xl);
+  --spacing-control-lg: var(--size-control-lg);
+  --spacing-control-md: var(--size-control-md);
+  --spacing-control-sm: var(--size-control-sm);
+  --spacing-control-xs: var(--size-control-xs);
+  --spacing-icon-btn: var(--size-icon-btn);
+  --spacing-icon-btn-sm: var(--size-icon-btn-sm);
+
+  --container-container: var(--size-container);
+  --container-panel: var(--size-panel);
+  --container-profile: var(--size-profile);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-figtree), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
