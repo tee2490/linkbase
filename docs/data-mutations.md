@@ -70,6 +70,7 @@ export async function updateLink(
 
 - Call `getSession()` on the first line, before reading any input. Server Actions are public HTTP endpoints, and the proxy doesn't protect them (`docs/auth.md`).
 - `userId` always comes from the session. Never read it from form data, arguments or URL params.
+- Rate-limited actions (e.g. `createLink`) check the limit right after the session and return a `formError` when it's hit (`docs/security.md`).
 
 ### 2. Validate input
 

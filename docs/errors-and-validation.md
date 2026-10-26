@@ -25,7 +25,7 @@ import { z } from "zod";
 
 export const linkInputSchema = z.object({
   title: z.string().trim().min(1, "Add a title").max(100, "Keep it under 100 characters"),
-  url: z.url("Enter a valid URL"),
+  url: z.httpUrl("Enter a valid http(s) URL"), // never z.url(): it accepts javascript: (docs/security.md)
 });
 
 export type LinkInput = z.infer<typeof linkInputSchema>;
