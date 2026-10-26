@@ -4,6 +4,12 @@
 
 Project documentation lives in `/docs`. Whenever a new file is created in `/docs`, add it to the Project Docs section below with one line on what it covers and when to read it.
 
+## Skills
+
+- **`vercel-react-best-practices`** (`.agents/skills/`, linked into `.claude/skills/`): Vercel's React and Next.js performance rules. Load it before writing, reviewing or refactoring components, pages, layouts, Server Actions or data loading, and before any performance or bundle-size work. Read only the `rules/<rule>.md` files that apply. Don't read the 100KB compiled `AGENTS.md`.
+  - **`/docs` wins on conflict.** Data is read in Server Components through `/lib/db/queries`, so skip client-fetching rules like `client-swr-dedup`. Caching uses `"use cache"` as described in `docs/data-fetching.md`, not `server-cache-lru`.
+  - **Don't add a dependency a rule suggests** (`better-all`, `swr`, `lru-cache`…) without asking first.
+
 ## Project Docs
 
 - `docs/architecture.md` — App Router rendering model (Server vs Client Components), folder structure for `/app`, `/components` and `/lib`, and naming conventions. Read before creating new files, routes, components or Server Actions.
@@ -17,4 +23,5 @@ Project documentation lives in `/docs`. Whenever a new file is created in `/docs
 - `docs/git-conventions.md` — Conventional Commits (`feat`, `fix`, `docs`, `refactor`, `test`, `chore`), `type/feature` branch names, one branch per feature, PRs into `main` with a required human review, squash merges and the GitHub settings that enforce them. Read before creating a branch, committing or opening a PR.
 - `docs/routing.md` — Route map, `(auth)` and `(dashboard)` route groups, per-route `layout`/`loading`/`error` files, and when to use Route Handlers vs Server Actions. Read before adding a page, route or API endpoint.
 - `docs/security.md` — Secrets in env vars (`.env.local` ignored, `.env.example` committed), security headers and the static CSP in `next.config.ts`, MongoDB-backed rate limits for sign-in and link creation, and safe rendering of user content (`z.httpUrl()`, JSX escaping, `ExternalLink` with `rel="noopener noreferrer"`). Read before adding an env var, an external origin, an abusable action or anything that renders user content.
+- `docs/testing.md` — Vitest unit tests for pure functions and Zod schemas (`*.test.ts` next to the file), end-to-end QA through Playwright MCP and the `run-qa-suite` skill (no committed e2e specs or config), the separate test database (`MONGODB_URI_TEST` in `.env.test`), Server Actions tested through QA instead of mocks, and test independence. Read before writing a test, running QA or adding a feature's QA Scenarios.
 - `docs/ui.md` — Every component with its variants and states, page layouts, and accessibility rules. Read before building or changing a component or page layout.

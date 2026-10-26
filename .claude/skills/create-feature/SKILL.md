@@ -23,6 +23,8 @@ Read every doc listed under **Docs followed** in the plan. Always include `docs/
 
 This project uses a Next.js version with breaking changes. Before writing Next.js code, read the matching guide in `node_modules/next/dist/docs/`, as `AGENTS.md` requires, and follow its deprecation notices.
 
+If the feature touches React or Next.js code (components, pages, layouts, Server Actions or data loading), load the `vercel-react-best-practices` skill. Read the `rules/*.md` files for the categories the feature hits, starting with the CRITICAL and HIGH ones: `async-` (waterfalls), `bundle-` and `server-`. `/docs` wins on any conflict, and a dependency a rule suggests is added only after asking (see `CLAUDE.md` → Skills).
+
 ## 3. Pull live library docs with Context7
 
 For each library API the feature uses (Next.js, React, Mongoose, NextAuth, Zod, Tailwind and so on):
@@ -37,6 +39,8 @@ Do this even for APIs you think you know. If the project docs and the library do
 Work through the plan's **Create** and **Change** lists in order: models and validation schemas first, then queries and Server Actions, then components and pages.
 
 Follow `/docs` exactly: folder locations, naming, `userId` scoping, Zod at the Server Action boundary, `ActionResult` returns, revalidation and safe rendering of user content. Match the style of the code around each change.
+
+Before the compile check, go over the new code against the rules you loaded: no sequential `await`s that could run in parallel, Client Components kept small and low in the tree, only serializable and needed props passed to them, no barrel imports. Fix what you find.
 
 When the code is written, run the project's typecheck and lint scripts from `package.json` and fix any errors in the files you touched. This is a compile check, not QA.
 

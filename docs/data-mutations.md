@@ -116,6 +116,9 @@ What each action revalidates:
 | `createLink`, `updateLink`, `deleteLink`, `reorderLinks` | `/dashboard` | `profile:{userId}`, `"max"` |
 | `updateProfile` (no handle change) | `/dashboard` | `profile:{userId}`, `"max"` |
 | `updateProfile` (handle changed) | `/dashboard` | `profile:{userId}` and `handle:{old}`, `{ expire: 0 }`; `handle:{new}`, `"max"` |
+| `signUp`, `signInWithPassword`, `signOutUser` | — (they redirect) | — |
+
+Auth actions are the exception to step 1: they run without a session, because they create one. They still validate with Zod, are rate-limited (`docs/security.md`) and return `ActionResult`.
 
 When you add an action, add a row here. When you add a cached query, check which actions must revalidate its tag.
 
