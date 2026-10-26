@@ -12,6 +12,7 @@ app/
   (auth)/
     layout.tsx                  Shared auth shell
     sign-in/page.tsx            /sign-in           Sign-in: public
+    sign-up/page.tsx            /sign-up           Sign-up: public
   (dashboard)/
     layout.tsx                  Shared app shell (nav, sidebar)
     dashboard/page.tsx          /dashboard         Signed-in only
@@ -26,6 +27,7 @@ app/
 | `/` | — | Public |
 | `/user/[handle]` | — | Public |
 | `/sign-in` | `(auth)` | Public. Signed-in users are redirected to `/dashboard` |
+| `/sign-up` | `(auth)` | Public. Signed-in users are redirected to `/dashboard` |
 | `/dashboard` | `(dashboard)` | Signed-in only |
 | `/add-links` | `(dashboard)` | Signed-in only |
 
@@ -34,7 +36,7 @@ app/
 Route groups (`(name)`) organise routes and share a layout **without adding a URL segment**: `app/(dashboard)/dashboard/page.tsx` is served at `/dashboard`, not `/(dashboard)/dashboard`.
 
 - **`(dashboard)`** holds every authenticated route. New signed-in pages go here.
-- **`(auth)`** holds sign-in and any future auth pages, such as sign-up. Those are **TBD**.
+- **`(auth)`** holds sign-in and sign-up, plus any future auth pages (password reset is **TBD**).
 - Two routes in different groups must not resolve to the same URL, because Next.js errors on that.
 
 ## Protection

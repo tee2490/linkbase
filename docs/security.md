@@ -90,6 +90,7 @@ Rate limits stop credential stuffing on sign-in and spam on link creation. They 
 | What | Key | Limit |
 | --- | --- | --- |
 | Sign-in attempts | Client IP | 10 per 15 minutes |
+| Sign-up (`signUp`) | Client IP | 5 per hour |
 | Link creation (`createLink`) | `userId` | 30 per hour |
 
 Start with these numbers and tune them from real usage.
@@ -114,7 +115,9 @@ if (!allowed) {
 }
 ```
 
-**Sign-in.** Auth.js handles sign-in under `/api/auth/*`, so the limit runs in `proxy.ts` (Node.js runtime) on `POST` requests to the sign-in and callback endpoints, before Auth.js sees them. Over the limit, the proxy returns `429 Too Many Requests` with a `Retry-After` header.
+**Sign-in.** The limit runs inside the Credentials provider's `authorize()` in `lib/auth/auth.ts`, before the password check. That one place covers both the sign-in Server Action and a direct `POST /api/auth/callback/credentials`, and it keeps the proxy free of database calls. Over the limit, `authorize()` throws a `CredentialsSignin` with `code = "rate_limited"`, and the sign-in form shows "Too many attempts. Try again in a few minutes."
+
+**Sign-up.** `signUp` checks the limit after validation and before hashing the password. Over the limit, it returns a `formError`.
 
 - Key sign-in on the client IP from the first `x-forwarded-for` entry set by the hosting platform. Don't trust headers the client can set if the app isn't behind a trusted proxy.
 - Keys hold ids and IPs only, never emails or other input the user typed (`docs/errors-and-validation.md` on logging).

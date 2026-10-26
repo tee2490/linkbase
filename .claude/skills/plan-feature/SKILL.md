@@ -32,6 +32,8 @@ Then read the docs for the feature area. Use the Project Docs list in `CLAUDE.md
 
 Look at the existing code in the affected folders so the plan matches what's already there.
 
+If the feature loads data or adds components, pages or Server Actions, skim the CRITICAL and HIGH rule names in the `vercel-react-best-practices` skill (`async-`, `bundle-`, `server-`). Then plan the server/client split and any parallel data loading up front. Put any notable choice in the plan's Notes.
+
 ## 3. Write the plan
 
 Keep it short. Use this structure:

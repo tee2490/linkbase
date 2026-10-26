@@ -10,7 +10,7 @@ type ClaimFormProps = {
 export function ClaimForm({ id, buttonVariant, className }: ClaimFormProps) {
   return (
     <form
-      action="/sign-in"
+      action="/sign-up"
       method="get"
       className={`flex flex-wrap items-stretch gap-2 ${className ?? ""}`}
     >
@@ -19,6 +19,7 @@ export function ClaimForm({ id, buttonVariant, className }: ClaimFormProps) {
           id={id}
           name="handle"
           label="Choose your username"
+          hideLabel
           prefix="linkbase/"
           placeholder="yourname"
           autoComplete="off"

@@ -47,6 +47,7 @@ Every schema uses:
 - **Indexes on `userId` and `handle`**:
   - `userId` is indexed on every model that belongs to a user.
   - `handle` (the public profile handle) is indexed and unique. `unique: true` creates the index, so don't also add `index: true`.
+  - `handle` is **optional**: sign-up asks only for email and password, and the handle is chosen afterwards. It uses `unique: true, sparse: true`, so any number of users can have no handle while the ones that are set stay unique.
 
 Register models with `mongoose.models.X || model(...)` so hot reloading doesn't throw `OverwriteModelError`.
 
@@ -69,7 +70,9 @@ export const LinkModel = models.Link || model("Link", linkSchema);
 
 ```ts
 // lib/db/models/user.ts (excerpt)
-handle: { type: String, required: true, unique: true, lowercase: true, trim: true },
+email: { type: String, required: true, unique: true, lowercase: true, trim: true, maxlength: 254 },
+passwordHash: { type: String, required: true, select: false }, // never returned unless asked for
+handle: { type: String, unique: true, sparse: true, lowercase: true, trim: true },
 ```
 
 ## Data access: always scope by user

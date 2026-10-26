@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
-import { Button } from "@/components/ui/button";
+import { HeaderAccount, HeaderAccountSkeleton } from "@/components/auth/header-account";
 
 export function SiteHeader() {
   return (
@@ -21,16 +22,9 @@ export function SiteHeader() {
           </a>
         </nav>
       </div>
-      <div className="flex items-center gap-2">
-        <span className="hidden sm:block">
-          <Button href="/sign-in" variant="soft" size="sm">
-            Log in
-          </Button>
-        </span>
-        <Button href="/sign-in" variant="ink" size="sm">
-          Sign up free
-        </Button>
-      </div>
+      <Suspense fallback={<HeaderAccountSkeleton />}>
+        <HeaderAccount />
+      </Suspense>
     </header>
   );
 }
