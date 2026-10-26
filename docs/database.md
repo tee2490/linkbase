@@ -94,3 +94,5 @@ export async function deleteLink(linkId: string) {
 ```
 
 If a filtered query matches nothing, treat it as "not found". Don't reveal whether the record exists for another user.
+
+**Exception: public profile.** The page at `/user/[handle]` reads a profile and its links by `handle` without a session. This lookup is read-only and returns only public fields. Writes are always scoped by `userId`. See `docs/auth.md`.

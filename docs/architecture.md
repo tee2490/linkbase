@@ -22,6 +22,7 @@ lib/
   db/                Database client
   auth/              Auth helpers
   types/             Shared TypeScript types
+  validation/        Shared Zod schemas (see docs/errors-and-validation.md)
 docs/                Project documentation
 ```
 
