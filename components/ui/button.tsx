@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from "react";
 import Link from "next/link";
 
-type ButtonVariant = "ink" | "forest" | "lime" | "soft" | "app" | "muted";
+type ButtonVariant = "ink" | "forest" | "lime" | "soft" | "app" | "muted" | "surface";
 type ButtonSize = "lg" | "md" | "sm";
 
 type ButtonBaseProps = {
@@ -26,6 +26,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   soft: "rounded-sm bg-surface-soft text-ink",
   app: "rounded-full bg-ink-app text-ink-inverse",
   muted: "rounded-full bg-surface-muted text-ink-app",
+  surface: "rounded-full bg-surface text-ink",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
