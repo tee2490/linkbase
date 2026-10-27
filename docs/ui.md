@@ -265,6 +265,20 @@ One link in the editor list: thumbnail, title, "N clicks · domain" meta, traili
 
 **States:** hover, drag-to-reorder, hidden (link switched off) and selected are **TBD**.
 
+### Dialog
+
+Modal for short forms and confirmations (Add a link, Delete this link?). `components/ui/dialog.tsx`, built on the native `<dialog>` opened with `showModal()`.
+
+`bg-surface rounded-lg shadow-phone`, width `min(480px, 100% − 32px)`, padding 32px (24px on phones), title `text-title-sm` as `<h2>`, optional description `text-body-md text-muted-app`. Scrim: `backdrop:bg-scrim`. Actions sit bottom right: Cancel (`muted`, `sm`) then the primary (`app`, `sm`).
+
+- Controlled by `open`; `onClose` runs on Esc, Cancel and a click on the scrim.
+- The native element traps focus, closes on Esc and returns focus to the opener. Title and description are wired to `aria-labelledby` / `aria-describedby`.
+- Confirmations focus Cancel first, so Enter never deletes by accident.
+
+### Row menu (⋮)
+
+A `ghost` `sm` IconButton labelled "More options for {title}" opens a small menu (`rounded-lg bg-surface p-2 shadow-float`) with Edit and Delete. Keyboard: ↓ on the trigger opens it, ↑/↓/Home/End move, Esc closes and returns focus to the trigger, Tab or a click outside closes it. Same pattern as the account menu.
+
 ### Panel
 
 White editor surface for one section of the page editor.
@@ -365,7 +379,7 @@ Below the 3:1 non-text floor: `border` (1.19:1) and `border-strong` (1.31:1) on 
 
 - Every interactive element shows the 2px ring on `:focus-visible`; pick `focus` or `focus-inverse` by the ground it sits on.
 - Use real elements: `<button>` for actions, `<a href>` for navigation, `<input>` with a `<label>`. No click handlers on `div`s.
-- Tabs arrow-key navigation, accordion keyboard shortcuts, and focus management for menus/dialogs: **TBD**.
+- Menus and dialogs: see Row menu and Dialog above. Tabs arrow-key navigation and accordion keyboard shortcuts: **TBD**.
 
 ### Touch targets
 

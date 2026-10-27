@@ -15,9 +15,10 @@ Actions live next to the route that uses them, in an `actions.ts` file:
 
 ```
 app/(dashboard)/
-  add-links/actions.ts    createLink
-  dashboard/actions.ts    updateLink, deleteLink, reorderLinks, updateProfile
+  dashboard/actions.ts    createLink, updateLink, deleteLink, reorderLinks, updateProfile
 ```
+
+Links are added through a dialog on `/dashboard`, so `createLink` lives with the other link actions.
 
 - One file per route, `"use server"` at the top of the file, named exports only.
 - Name actions verb-first in camelCase (`docs/architecture.md`).
@@ -178,7 +179,7 @@ export function DeleteLinkButton({ linkId }: { linkId: string }) {
 ```
 
 - Don't refetch after an action. Revalidation re-renders the Server Components, which pass fresh props down (`docs/data-fetching.md`).
-- To navigate after success (e.g. back to `/dashboard` from `/add-links`), call `redirect()` from `next/navigation` after revalidating. `redirect()` throws, so call it outside any `try/catch`.
+- To navigate after success (e.g. to `/dashboard` from `/onboarding`), call `redirect()` from `next/navigation` after revalidating. `redirect()` throws, so call it outside any `try/catch`.
 
 ## Checklist
 

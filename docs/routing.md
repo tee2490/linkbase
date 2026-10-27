@@ -16,8 +16,7 @@ app/
     sign-up/page.tsx            /sign-up           Sign-up: public
   (dashboard)/
     layout.tsx                  Shared app shell (nav, sidebar)
-    dashboard/page.tsx          /dashboard         Signed-in only
-    add-links/page.tsx          /add-links         Signed-in only
+    dashboard/page.tsx          /dashboard         Signed-in only (link editor: add via dialog, inline edit)
   api/
     auth/[...nextauth]/route.ts Auth.js callbacks (third-party)
     webhooks/…                  Webhooks only
@@ -31,7 +30,6 @@ app/
 | `/sign-in` | `(auth)` | Public. Signed-in users are redirected to `/dashboard` |
 | `/sign-up` | `(auth)` | Public. Signed-in users are redirected to `/dashboard` |
 | `/dashboard` | `(dashboard)` | Signed-in only |
-| `/add-links` | `(dashboard)` | Signed-in only |
 
 ## Route groups
 

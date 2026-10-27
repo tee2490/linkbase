@@ -1,0 +1,8 @@
+// The short domain shown under a link title: "https://www.strava.com/x" → "strava.com".
+export function displayHost(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+}

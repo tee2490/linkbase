@@ -14,7 +14,7 @@ import type { Config } from "tailwindcss";
 
 const v = (name: string) => `var(--${name})`;
 const colors = [
-  "surface", "canvas", "surface-soft", "surface-muted", "field", "profile-canvas", "backdrop", "border", "border-strong",
+  "surface", "canvas", "surface-soft", "surface-muted", "field", "profile-canvas", "backdrop", "scrim", "border", "border-strong",
   "ink", "ink-app", "ink-inverse", "muted", "muted-app",
   "lime", "lime-soft", "forest", "cobalt", "navy", "maroon", "maroon-deep", "orchid", "magenta", "grape", "sage", "olive",
   "teal", "orange", "mustard",
@@ -83,6 +83,7 @@ Every color generates `bg-*`, `text-*`, `border-*`, `ring-*`, `outline-*`, `fill
 | `field` | `#f6f7f5` | `bg-field` | `--field` | Filled inputs on white |
 | `profile-canvas` | `#edeef1` | `bg-profile-canvas` | `--profile-canvas` | Public profile page and phone preview |
 | `backdrop` | `#a5a8aa` | `bg-backdrop` | `--backdrop` | Desktop backdrop behind the profile card. Never under text |
+| `scrim` | `rgba(20,20,20,0.45)` | `backdrop:bg-scrim` | `--scrim` | Overlay behind modal dialogs. Never under text |
 | `border` | `#ebebeb` | `border-border` | `--border` | 1px borders on editor rows/panels, dividers. Decorative only |
 | `border-strong` | `#e1e2d9` | `border-border-strong` | `--border-strong` | Outline button border. Below 3:1 — see accessibility in `docs/ui.md` |
 
@@ -274,7 +275,7 @@ What the system defines (in `bundle.css`; the README calls these house defaults,
 ## Not defined (TBD)
 
 - Dark theme and any theme other than Light
-- Warning and info colors; translucent colors and overlays (modal scrim)
+- Warning and info colors; translucent colors and overlays other than the modal `scrim`
 - Z-index scale
 - Breakpoints (see above)
 - Responsive type scale

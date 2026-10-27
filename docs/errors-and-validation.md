@@ -92,7 +92,7 @@ The form is a Client Component using React's `useActionState`:
 "use client";
 import { useActionState } from "react";
 
-import { createLink } from "@/app/(dashboard)/add-links/actions";
+import { createLink } from "@/app/(dashboard)/dashboard/actions";
 
 export function AddLinkForm() {
   const [state, formAction, pending] = useActionState(createLink, null);
