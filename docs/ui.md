@@ -255,6 +255,8 @@ The full-width button that makes up a public profile — one per link.
 </a>
 ```
 
+**Props:** `href`, `showMore`, `external`. Set `external` for any user-supplied URL: it renders through `ExternalLink` (new tab, `rel="noopener noreferrer"`, scheme check) and adds a visually hidden "(opens in a new tab)". Previews that point to `#` leave it off.
+
 The profile mockup adds a 22px line icon 20px from the left edge and a larger "featured" link card with a cobalt banner; neither is a system component yet (**TBD**).
 
 ### LinkRow

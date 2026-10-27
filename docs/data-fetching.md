@@ -106,52 +106,51 @@ import { UserModel } from "@/lib/db/models/user";
 import { LinkModel } from "@/lib/db/models/link";
 import { handleTag, profileTag } from "@/lib/db/queries/tags";
 import type { PublicProfile } from "@/lib/types/profile";
+import { handleFormatSchema } from "@/lib/validation/handle";
 
-export async function getPublicProfile(handle: string): Promise<PublicProfile | null> {
+export async function getPublicProfile(rawHandle: string): Promise<PublicProfile | null> {
   "use cache";
   cacheLife("hours");
+
+  // Malformed handles never reach the database.
+  const parsed = handleFormatSchema.safeParse(rawHandle);
+  if (!parsed.success) return null;
+  const handle = parsed.data;
   cacheTag(handleTag(handle));
 
   await connectDb();
-  const user = await UserModel.findOne({ handle: handle.toLowerCase() })
-    .select("handle displayName bio avatarUrl")
-    .lean();
-  if (!user) return null;
+  const user = await UserModel.findOne({ handle }).select("_id handle").lean();
+  if (!user?.handle) return null;
 
-  cacheTag(profileTag(user._id.toString()));
-  const links = await LinkModel.find({ userId: user._id }).select("title url").lean();
+  const userId = user._id.toString();
+  cacheTag(profileTag(userId));
+  const links = await LinkModel.find({ userId }).select("title url").sort({ createdAt: -1 }).lean();
 
-  return {
-    handle: user.handle,
-    displayName: user.displayName,
-    bio: user.bio,
-    avatarUrl: user.avatarUrl,
-    links: links.map((link) => ({ id: link._id.toString(), title: link.title, url: link.url })),
-  };
+  // Public fields only: no user id, email or link ids.
+  return { handle: user.handle, links: links.map((link) => ({ title: link.title, url: link.url })) };
 }
 ```
+
+The page needs a real `404` for unknown handles. A `notFound()` inside `<Suspense>` runs after streaming has started and keeps a `200` status (Next.js docs: `not-found.md`, "Calling `notFound()` after streaming has started"). So `/user/[handle]` awaits `params` and the cached lookup at the top level, with no `<Suspense>`. Under Cache Components that is only allowed when `generateStaticParams` returns at least one param, so it returns a placeholder that fails the handle format check: the build never queries the database, and real handles render on first request and are cached.
 
 ```tsx
 // app/user/[handle]/page.tsx
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getPublicProfile } from "@/lib/db/queries/profile";
 
-export default function UserPage({ params }: PageProps<"/user/[handle]">) {
-  return (
-    <Suspense fallback={<ProfileSkeleton />}>
-      <Profile params={params} />
-    </Suspense>
-  );
+export async function generateStaticParams() {
+  return [{ handle: "__placeholder__" }];
 }
 
-async function Profile({ params }: Pick<PageProps<"/user/[handle]">, "params">) {
+export default async function UserPage({ params }: PageProps<"/user/[handle]">) {
   const { handle } = await params;
   const profile = await getPublicProfile(handle);
-  if (!profile) notFound();
-  return <ProfileView profile={profile} />;
+  if (!profile) notFound(); // before streaming, so the status is 404
+  return <PublicProfileCard profile={profile} />;
 }
 ```
+
+Private pages keep the `<Suspense>` pattern above: they read the session, which is request-time data and can't be awaited at the top level.
 
 - `"use cache"` functions can't read `cookies()` or `headers()`, which keeps session data out of the shared cache. Never call `getSession()` inside one.
 - Pair every `"use cache"` with a `cacheLife` profile. `hours` is the default for the public profile, since tags handle freshness after edits.

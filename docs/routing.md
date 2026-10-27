@@ -25,7 +25,7 @@ app/
 | Route | Group | Access |
 | --- | --- | --- |
 | `/` | — | Public |
-| `/user/[handle]` | — | Public |
+| `/user/[handle]` | — | Public. Unknown handles return a real `404` with `not-found.tsx`; see `docs/data-fetching.md` for the placeholder `generateStaticParams` that makes this possible |
 | `/onboarding` | — | Signed-in only. Has its own full-screen layout, so it sits outside `(dashboard)`. Users with a handle are redirected to `/dashboard` |
 | `/sign-in` | `(auth)` | Public. Signed-in users are redirected to `/dashboard` |
 | `/sign-up` | `(auth)` | Public. Signed-in users are redirected to `/dashboard` |
