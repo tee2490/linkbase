@@ -43,6 +43,6 @@ export async function signUp(_prev: ActionResult | null, formData: FormData): Pr
   }
 
   // Redirects on success. redirect() throws, so this stays outside try/catch.
-  await signIn("credentials", { email, password, redirectTo: "/dashboard" });
+  await signIn("credentials", { email, password, redirectTo: "/onboarding" });
   return { ok: true, data: undefined };
 }

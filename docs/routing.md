@@ -9,6 +9,7 @@ app/
   layout.tsx                    Root layout (html, body, fonts, globals.css)
   page.tsx                      /                  Landing page: public
   user/[handle]/page.tsx        /user/[handle]     Public profile: public
+  onboarding/page.tsx           /onboarding        Pick a username: signed-in, no handle yet
   (auth)/
     layout.tsx                  Shared auth shell
     sign-in/page.tsx            /sign-in           Sign-in: public
@@ -26,6 +27,7 @@ app/
 | --- | --- | --- |
 | `/` | — | Public |
 | `/user/[handle]` | — | Public |
+| `/onboarding` | — | Signed-in only. Has its own full-screen layout, so it sits outside `(dashboard)`. Users with a handle are redirected to `/dashboard` |
 | `/sign-in` | `(auth)` | Public. Signed-in users are redirected to `/dashboard` |
 | `/sign-up` | `(auth)` | Public. Signed-in users are redirected to `/dashboard` |
 | `/dashboard` | `(dashboard)` | Signed-in only |

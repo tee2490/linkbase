@@ -47,7 +47,8 @@ Every schema uses:
 - **Indexes on `userId` and `handle`**:
   - `userId` is indexed on every model that belongs to a user.
   - `handle` (the public profile handle) is indexed and unique. `unique: true` creates the index, so don't also add `index: true`.
-  - `handle` is **optional**: sign-up asks only for email and password, and the handle is chosen afterwards. It uses `unique: true, sparse: true`, so any number of users can have no handle while the ones that are set stay unique.
+  - `handle` is **optional**: sign-up asks only for email and password, and the handle is chosen afterwards. It uses `unique: true, sparse: true`, so any number of users can have no handle while the ones that are set stay unique. Leave it unset rather than `null`, because sparse indexes still include `null` values.
+  - Handle format: 3–30 characters, lowercase letters, numbers, hyphens and underscores (`/^[a-z0-9_-]+$/`), with a few reserved names. `lib/validation/handle.ts` is the source of truth, and the model repeats the rule as `minlength`/`maxlength`/`match`.
 
 Register models with `mongoose.models.X || model(...)` so hot reloading doesn't throw `OverwriteModelError`.
 

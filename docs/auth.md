@@ -9,7 +9,8 @@ lib/auth/
   auth.config.ts     Shared config with no database imports (pages, JWT strategy, session callback). Used by proxy.ts
   auth.ts            NextAuth config + Credentials provider; exports handlers, auth, signIn, signOut
   get-session.ts     getSession(): server-side helper returning the signed-in userId
-  get-current-user.ts getCurrentUser(): { id, email } | null, deduplicated per request with React cache()
+  get-current-user.ts getCurrentUser(): { id, email, handle } | null, deduplicated per request with React cache()
+  require-onboarded-user.ts requireOnboardedUser(): the signed-in user with a handle, or a redirect
   password.ts        hashPassword / verifyPassword (Node scrypt)
   callback-url.ts    safeCallbackUrl(): same-origin relative paths only
 app/api/auth/[...nextauth]/route.ts   Auth.js route handler (re-exports handlers)
@@ -30,7 +31,8 @@ proxy.ts             Route protection (Next.js 16 renamed middleware.ts to proxy
 
 | Routes | Access |
 | --- | --- |
-| `app/(dashboard)/*` | Signed-in users only. Protected by default |
+| `app/(dashboard)/*` | Signed-in users with a handle. Protected by default |
+| `/onboarding` | Signed-in users without a handle. Users who already have one are sent to `/dashboard` |
 | `/` | Public landing page |
 | `/user/[handle]` | Public profile, open to everyone |
 | `/sign-in`, `/sign-up` (`app/(auth)/*`), `/api/auth/*` | Public, needed to sign in |
@@ -115,6 +117,14 @@ Validation and the `ActionResult` type are covered in `docs/errors-and-validatio
 
 - Never accept a `userId` from the client, form data or URL params.
 - Don't check auth in `layout.tsx`. Layouts don't re-render on client navigation, so the check can be skipped. Check in pages, Server Actions and data functions.
+
+## Onboarding gate
+
+A new account has no `handle` until the user picks one on `/onboarding`. Sign-up redirects there directly.
+
+- **Every `(dashboard)` page calls `requireOnboardedUser()`** (`lib/auth/require-onboarded-user.ts`) in the component that reads the session. With no user it redirects to `/sign-in?session=expired`, and with no handle to `/onboarding`. Sign-in lands on `/dashboard`, so a user without a handle is forwarded from there.
+- The gate lives in pages, not in `proxy.ts`. The proxy only reads the JWT, and the session holds only the user id.
+- `/onboarding` itself uses `getCurrentUser()` and redirects users who already have a handle to `/dashboard`.
 
 ## Ownership at the database level
 
