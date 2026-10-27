@@ -92,6 +92,7 @@ Rate limits stop credential stuffing on sign-in and spam on link creation. They 
 | Sign-in attempts | Client IP | 10 per 15 minutes |
 | Sign-up (`signUp`) | Client IP | 5 per hour |
 | Link creation (`createLink`) | `userId` | 30 per hour |
+| Username availability (`checkHandle`) | `userId` | 120 per 10 minutes |
 
 Start with these numbers and tune them from real usage.
 

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { getCurrentUser } from "@/lib/auth/get-current-user";
+import { requireOnboardedUser } from "@/lib/auth/require-onboarded-user";
 
 export const metadata: Metadata = {
   title: "Dashboard · Linkbase",
@@ -19,10 +18,8 @@ export default function DashboardPage() {
 }
 
 async function DashboardWelcome() {
-  // Server-side identity check: the proxy alone isn't the security boundary (docs/auth.md).
-  const user = await getCurrentUser();
-  // No user but maybe a session cookie (e.g. the account was deleted): the proxy clears it on this URL.
-  if (!user) redirect("/sign-in?session=expired");
+  // Server-side identity and onboarding check: the proxy alone isn't the security boundary (docs/auth.md).
+  const user = await requireOnboardedUser();
 
   return (
     <section className="flex max-w-panel flex-col gap-2 rounded-lg bg-surface p-10 shadow-card">
